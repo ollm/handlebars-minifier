@@ -1,0 +1,37 @@
+{
+	"name": "handlebars-minifier",
+	"description": "",
+	"version": "0.0.1",
+	"keywords": [
+		"handlebars",
+		"compressor",
+		"css",
+		"html",
+		"htmlmin",
+		"javascript",
+		"min",
+		"minification",
+		"minifier",
+		"minify",
+		"optimize",
+		"optimizer",
+		"uglifier",
+		"uglify"
+	],
+	"homepage": "https://github.com/ollm/handlebars-minifier/",
+	"author": {
+		"name": "Oleguer Llopart",
+		"email": "oleguer.llopart.mora@gmail.com",
+		"url": "https://github.com/ollm"
+	},
+	"contributors": [],
+	"license": "MIT",
+	"main": "src/minifier.js",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ollm/handlebars-minifier.git"
+	},
+	"dependencies": {
+		"md5": "^2.3.0"
+	}
+}
