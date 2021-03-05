@@ -161,12 +161,25 @@ function removeAttrQuotes(template, options)
 		/([a-z])=\"([^"\s]*)\"/,
 	], function(attr) {
 
-		if(!/[^'"]{{.+}}[^'"]/.test(attr))
+		if(!/{{.+}}/.test(attr))
 			attr = attr.replace(/([a-z])=\"([^{][^"\s]*[^}])\"/ig, '$1=$2');
 
 		return attr;
 
 	}, true);
+
+	template = minifyHandlebarsTemplateRegexForeach(template, [
+		/\son[a-z]*="([^"\s]*)"/,
+		/\soff="([^"\s]*)"/,
+		/\sstyle="([^"\s]*)"/,
+	], function(js) {
+
+		if(!/['"]{{.+}}['"]/.test(attr) && !/{{.+}}[^()]*['"]/.test(attr) && !/['"][^()]*{{.+}}/.test(attr))
+			attr = attr.replace(/([a-z])=\"([^{][^"\s]*[^}])\"/ig, '$1=$2');
+
+		return attr;
+
+	}, false);
 
 	return template;
 }
