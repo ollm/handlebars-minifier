@@ -172,7 +172,7 @@ function removeAttrQuotes(template, options)
 		/\son[a-z]*="([^"\s]*)"/,
 		/\soff="([^"\s]*)"/,
 		/\sstyle="([^"\s]*)"/,
-	], function(js) {
+	], function(attr) {
 
 		if(!/['"]{{.+}}['"]/.test(attr) && !/{{.+}}[^()]*['"]/.test(attr) && !/['"][^()]*{{.+}}/.test(attr))
 			attr = attr.replace(/([a-z])=\"([^{][^"\s]*[^}])\"/ig, '$1=$2');
