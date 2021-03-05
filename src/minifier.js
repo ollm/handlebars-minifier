@@ -168,18 +168,21 @@ function removeAttrQuotes(template, options)
 
 	}, true);
 
-	template = minifyHandlebarsTemplateRegexForeach(template, [
-		/\son[a-z]*="([^"\s]*)"/,
-		/\soff="([^"\s]*)"/,
-		/\sstyle="([^"\s]*)"/,
-	], function(attr) {
+	if(!options.removeAttrQuotesSafe)
+	{
+		template = minifyHandlebarsTemplateRegexForeach(template, [
+			/\son[a-z]*="([^"\s]*)"/,
+			/\soff="([^"\s]*)"/,
+			/\sstyle="([^"\s]*)"/,
+		], function(attr) {
 
-		if(!/['"]{{.+}}['"]/.test(attr) && !/{{.+}}[^()]*['"]/.test(attr) && !/['"][^()]*{{.+}}/.test(attr))
-			attr = attr.replace(/([a-z])=\"([^{][^"\s]*[^}])\"/ig, '$1=$2');
+			if(!/['"]{{.+}}['"]/.test(attr) && !/{{.+}}[^()]*['"]/.test(attr) && !/['"][^()]*{{.+}}/.test(attr))
+				attr = attr.replace(/([a-z])=\"([^{][^"\s]*[^}])\"/ig, '$1=$2');
 
-		return attr;
+			return attr;
 
-	}, false);
+		}, false);
+	}
 
 	return template;
 }
@@ -190,6 +193,8 @@ var defaultOptions = {
 	minifyCSS: true,
 	removeScriptTypeAttributes: true,
 	removeStyleLinkTypeAttributes: true,
+	removeAttrQuotes: true,
+	removeAttrQuotesSafe: true,
 };
 
 function minifyHandlebarsTemplate(template, options = {})
@@ -225,7 +230,8 @@ function minifyHandlebarsTemplate(template, options = {})
 		template = template.replace(/\s*type="text\/css"(\s+(\>))?/ig, '$2');
 
 	// Remove Attr Quotes
-	template = removeAttrQuotes(template);
+	if(options.removeAttrQuotes)
+		template = removeAttrQuotes(template, options);
 
 	// Remove HTML Comments
 	template = template.replace(/\<![\S\s]*?(\>|$)/ig, '');
