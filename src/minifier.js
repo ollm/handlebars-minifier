@@ -82,6 +82,57 @@ function minifyHandlebarsTemplateRegexForeach(template, regexs, callback, full =
 
 }
 
+function minifyHandlebarsTemplateOutsideRegexForeach(template, regexs, callback)
+{
+	let matches = [];
+	let haveMatches = true;
+
+	while(haveMatches)
+	{
+		haveMatches = false;
+
+		for(let i in regexs)
+		{
+			let regex = regexs[i];
+			let matchKey = 1;
+
+			if(Array.isArray(regex))
+			{
+				matchKey = regex[1];
+				regex = regex[0];
+			}
+
+			if(regex.test(template))
+			{
+				let key = md5(Math.random())+padWithZeroes(minifyHandlebarsTemplateRegexForeachNum++, 10);
+
+				let match = template.match(regex);
+				template = template.replace(regex, key);
+
+				matches.push({
+					key: key,
+					match: match,
+					matchKey: matchKey,
+				});
+
+				haveMatches = true;
+			}
+		}
+	}
+
+	template = callback(template);
+
+	matches.reverse();
+
+	for(let i in matches)
+	{
+		template = template.replace(new RegExp(escapeRegExp(matches[i].key)), matches[i].match[0]);
+	}
+
+	return template;
+
+}
+
 function canCollapseWhitespace(tag)
 {
   return !/^(?:script|style|pre|textarea)$/.test(tag);
@@ -103,21 +154,28 @@ function minifyJS(template, options)
 		[/\<script(\s[^\>]*)?\>([^<]*)\<\/script(\s[^\>]*)?\>/, 2]
 	], function(js) {
 
-		// Remove JS comments
-		js = js.replace(/\/\/[^\n]*/ig, '');
-		js = js.replace(/\/\*[\s\S]*?(\*\/|$)/ig, '');
+		return minifyHandlebarsTemplateOutsideRegexForeach(js, [
+			/"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"/s,
+			/'[^'\\\\]*(?:\\\\.[^'\\\\]*)*'/s,
+		], function(js) {
 
-		if(options.safeCollapseWhiteSpace)
-			js = safeCollapseWhiteSpace(js, options);
+			// Remove JS comments
+			js = js.replace(/\/\/[^\n]*/ig, '');
+			js = js.replace(/\/\*[\s\S]*?(\*\/|$)/ig, '');
 
-		js = js.replace(/,\s+/ig, ',');
-		js = js.replace(/:\s+/ig, ':');
-		js = js.replace(/true/ig, '!0');
-		js = js.replace(/false/ig, '!1');
-		js = js.replace(/([0-9()]|vw|vh|px|%)\s*([\.\-\+\*\/])/ig, '$1$2');
-		js = js.replace(/([\.\-\+\*\/])\s*([0-9()])/ig, '$1$2');
+			if(options.safeCollapseWhiteSpace)
+				js = safeCollapseWhiteSpace(js, options);
 
-		return js.trim();
+			js = js.replace(/,\s+/ig, ',');
+			js = js.replace(/:\s+/ig, ':');
+			js = js.replace(/true/ig, '!0');
+			js = js.replace(/false/ig, '!1');
+			js = js.replace(/([0-9()]|vw|vh|px|%)\s*([\.\-\+\*\/])/ig, '$1$2');
+			js = js.replace(/([\.\-\+\*\/])\s*([0-9()])/ig, '$1$2');
+
+			return js.trim();
+
+		});
 
 	}, false);
 
