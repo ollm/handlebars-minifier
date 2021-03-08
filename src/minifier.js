@@ -292,7 +292,7 @@ function minifyHandlebarsTemplate(template, options = {})
 		template = removeAttrQuotes(template, options);
 
 	// Remove HTML Comments
-	template = template.replace(/\<![\S\s]*?(\>|$)/ig, '');
+	template = template.replace(/\<!--[\S\s]*?[^\/]{2}--\>/ig, '');
 
 	// Remove the space between html elements keeping one space (safe mode)
 	if(options.safeCollapseWhiteSpace)
