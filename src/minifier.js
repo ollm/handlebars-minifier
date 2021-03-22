@@ -201,7 +201,17 @@ function minifyCSS(template, options)
 		css = css.replace(/\s*:\s*/ig, ':');
 		css = css.replace(/([0-9()]|vw|vh|px|%)\s*([\.\*\/])/ig, '$1$2');
 		css = css.replace(/([\.\*\/])\s*([0-9()])/ig, '$1$2');
-		css = css.replace(/([^0-9])0px/ig, '$10');
+		
+		css = minifyHandlebarsTemplateOutsideRegexForeach(css, [
+			/calc(\((?>[^()]+|(?1))*\))/i,
+		], function(css) {
+
+			css = css.replace(/([^0-9])0px/ig, '$10');
+
+			return css;
+
+		});
+		
 		css = css.replace(/([^0-9])0\./ig, '$1.');
 		css = css.replace(/\s*>\s*/ig, '>');
 
