@@ -202,7 +202,7 @@ function minifyCSS(template, options)
 		css = css.replace(/([0-9()]|vw|vh|px|%)\s*([\.\*\/])/ig, '$1$2');
 		css = css.replace(/([\.\*\/])\s*([0-9()])/ig, '$1$2');
 		
-		css = minifyHandlebarsTemplateOutsideRegexForeach(css, [
+		/*css = minifyHandlebarsTemplateOutsideRegexForeach(css, [
 			/calc(\((?>[^()]+|(?1))*\))/i,
 		], function(css) {
 
@@ -210,7 +210,7 @@ function minifyCSS(template, options)
 
 			return css;
 
-		});
+		});*/
 		
 		css = css.replace(/([^0-9])0\./ig, '$1.');
 		css = css.replace(/\s*>\s*/ig, '>');
