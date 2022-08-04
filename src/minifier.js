@@ -320,6 +320,11 @@ function minifyHandlebarsTemplate(template, options = {})
 	return template;
 }
 
+/*
+	
+	Handlebars Documentation: https://handlebarsjs.com/api-reference/compilation.html#handlebars-compile-template-options
+
+*/
 function generatePrecompileOptions(template, helpers = [], options = {})
 {
 	let knownHelpersOnly = true,
@@ -327,8 +332,8 @@ function generatePrecompileOptions(template, helpers = [], options = {})
 
 	for(let i in helpers)
 	{
-		if(new RegExp(escapeRegExp(helpers[i])).test(template))
-			knownHelpersOnly = false;
+		//if(new RegExp(escapeRegExp(helpers[i])).test(template))
+		//	knownHelpersOnly = false;
 
 		knownHelpers[helpers[i]] = true;
 	}
