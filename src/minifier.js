@@ -344,10 +344,29 @@ function generatePrecompileOptions(template, helpers = [], options = {})
 			knownHelpersOnly: knownHelpersOnly,
 			data: /@(?:root|first|index|key|last|level)/.test(template) ? true : false,
 			assumeObjects: !/\{\{[^\}]+[a-z0-9]+\.[a-z0-9][^\}]+\}\}/i.test(template) ? true : false,
+			strict: options.strictWithAssumeObjects && !/\{\{[^\}]+[a-z0-9]+\.[a-z0-9][^\}]+\}\}/i.test(template) && !/\{\{\^[^\}]+\}\}/.test(template) ? true : false,
 		},
 		...options
 	};
 }
 
+function removeStrictLocation(precompiled)
+{
+	return precompiled.replace(/\,\s*\{['"]?s(?:tart)?['"]?:\{['"]?l(?:ine)['"]?:[0-9]+,['"]?c(?:olumn)['"]?:[0-9]+\},['"]?e(?:nd)['"]?:\{['"]?l(?:ine)['"]?:[0-9]+,['"]?c(?:olumn)['"]?:[0-9]+\}\}\s*/g, '');
+}
+
+function reduceStrictLocation(precompiled)
+{
+	return precompiled.replace(/\,\s*\{['"]?s(?:tart)['"]?:\{['"]?l(?:ine)['"]?:([0-9]+),['"]?c(?:olumn)['"]?:([0-9]+)\},['"]?e(?:nd)['"]?:\{['"]?l(?:ine)['"]?:([0-9]+),['"]?c(?:olumn)['"]?:([0-9]+)\}\}\s*/g, ',{start:{line:$1,column:$2},end:{line:$3,column:$4}}');
+}
+
+function shortStrictLocation(precompiled)
+{
+	return precompiled.replace(/\,\s*\{['"]?s(?:tart)['"]?:\{['"]?l(?:ine)['"]?:([0-9]+),['"]?c(?:olumn)['"]?:([0-9]+)\},['"]?e(?:nd)['"]?:\{['"]?l(?:ine)['"]?:([0-9]+),['"]?c(?:olumn)['"]?:([0-9]+)\}\}\s*/g, ',{s:{l:$1,c:$2},e:{l:$3,c:$4}}');
+}
+
 exports.minify = minifyHandlebarsTemplate;
 exports.precompileOptions = generatePrecompileOptions;
+exports.removeStrictLocation = removeStrictLocation;
+exports.reduceStrictLocation = reduceStrictLocation;
+exports.shortStrictLocation = shortStrictLocation;
