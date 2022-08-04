@@ -312,16 +312,19 @@ function minifyHandlebarsTemplate(template, options = {})
 
 function generatePrecompileOptions(template, helpers = [])
 {
-	let knownHelpersOnly = true;
+	let knownHelpersOnly = true,
+		knownHelpers = {};
 
 	for(let i in helpers)
 	{
 		if(new RegExp(escapeRegExp(helpers[i])).test(template))
 			knownHelpersOnly = false;
+
+		knownHelpers[helpers[i]] = true;
 	}
 
 	return {
-		knownHelpers: true,
+		knownHelpers: knownHelpers,
 		knownHelpersOnly: knownHelpersOnly,
 		data: /@(?:root|first|index|key|last|level)/.test(template) ? true : false,
 	};
