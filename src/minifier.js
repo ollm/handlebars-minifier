@@ -338,6 +338,7 @@ function generatePrecompileOptions(template, helpers = [], options = {})
 			knownHelpers: knownHelpers,
 			knownHelpersOnly: knownHelpersOnly,
 			data: /@(?:root|first|index|key|last|level)/.test(template) ? true : false,
+			assumeObjects: !/\{\{[^\}]+[a-z0-9]+\.[a-z0-9][^\}]+\}\}/i.test(template) ? true : false,
 		},
 		...options
 	};
