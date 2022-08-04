@@ -310,7 +310,7 @@ function minifyHandlebarsTemplate(template, options = {})
 	return template;
 }
 
-function generatePrecompileOptions(template, helpers = [])
+function generatePrecompileOptions(template, helpers = [], options = {})
 {
 	let knownHelpersOnly = true,
 		knownHelpers = {};
@@ -324,9 +324,12 @@ function generatePrecompileOptions(template, helpers = [])
 	}
 
 	return {
-		knownHelpers: knownHelpers,
-		knownHelpersOnly: knownHelpersOnly,
-		data: /@(?:root|first|index|key|last|level)/.test(template) ? true : false,
+		...{
+			knownHelpers: knownHelpers,
+			knownHelpersOnly: knownHelpersOnly,
+			data: /@(?:root|first|index|key|last|level)/.test(template) ? true : false,
+		},
+		...options
 	};
 }
 
